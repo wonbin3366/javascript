@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="postBox">
+        <table id="postBox-table" border="1">
+            <tr>
+                <td>번호</td>
+                <td>제목</td>
+                <td>내용</td>
+                <td>작성자</td>
+            </tr>
+        </table>
+    </div>
+    <button onclick="down()">다운로드</button>
+
+    <script>
+        async function down() {
+            let response = await fetch("http://192.168.200.58:8080/init/post", {
+                method: "get"
+            });
+            let jsobject = await response.json();
+            //console.log(jsobject); //이걸 그림을 그리려면 하나하나다꺼내야한다
+            //console.log(jsobject.data[0].title);    
+            render(jsobject);
+        }
+        function render(jsobject) {
+            let tableEl = document.querySelector("#postBox-table");
+            for (let i = 0; i < jsobject.data.length; i++) {
+                let tr = makeTr(jsobject.data[i]);
+                tableEl.append(tr);
+            }
+        }
+        function makeTr(post) {
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td>${post.id}</td>
+            <td>${post.title}</td>
+            <td>${post.content}</td>
+            <td>${post.user.username}</td>
+            `;
+            return tr;
+        }
+    </script>
+
+
+</body>
+
+</html>
